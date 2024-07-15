@@ -132,6 +132,20 @@ function main(){
 
 
 
+        let help_url='https://ameblo.jp/personwritep/entry-12803137359.html';
+
+        let help=
+            '<a class="epalette_help" href="'+ help_url +'" target="_blank">'+
+            '<svg width="20" height="24" viewBox="0 -20 150 150">'+
+            '<path  fill="#fff" d="M66 13C56 15 47 18 39 24C-12 60 18 146 82 137C92 '+
+            '135 102 131 110 126C162 90 128 4 66 13M68 25C131 17 145 117 81 '+
+            '125C16 133 3 34 68 25M69 40C61 41 39 58 58 61C66 63 73 47 82 57C84 '+
+            '60 83 62 81 65C77 70 52 90 76 89C82 89 82 84 86 81C92 76 98 74 100 66'+
+            'C105 48 84 37 69 40M70 94C58 99 66 118 78 112C90 107 82 89 70 94z">'+
+            '</path></svg></a>';
+
+
+
         if(sender==112){ // F1　　h2 見出しの自動記入
             let style_text='background: #b0e0e6; padding: .32em 1em .2em'; // h2のデザイン
             let font_size='font-size: 1em'; // h2のフォントサイズ
@@ -451,19 +465,6 @@ function main(){
 
 
         if(sender==123){ // F12　　「Elements Palette」のメニュー表示
-
-            let help_url='https://ameblo.jp/personwritep/entry-12803137359.html';
-
-            let help=
-                '<a class="epalette_help" href="'+ help_url +'" target="_blank">'+
-                '<svg width="20" height="24" viewBox="0 -20 150 150">'+
-                '<path  fill="#fff" d="M66 13C56 15 47 18 39 24C-12 60 18 146 82 137C92 '+
-                '135 102 131 110 126C162 90 128 4 66 13M68 25C131 17 145 117 81 '+
-                '125C16 133 3 34 68 25M69 40C61 41 39 58 58 61C66 63 73 47 82 57C84 '+
-                '60 83 62 81 65C77 70 52 90 76 89C82 89 82 84 86 81C92 76 98 74 100 66'+
-                'C105 48 84 37 69 40M70 94C58 99 66 118 78 112C90 107 82 89 70 94z">'+
-                '</path></svg></a>';
-
             let ep_style=
                 '<style>'+
                 '.ep_menu { position: absolute; top: 10px; right: 20px; z-index: 15; '+
@@ -811,7 +812,6 @@ function main(){
 
 
         if(sender==223){ // F12 +Shift　　「Elements Palette +Shift」のメニュー表示
-
             let eps_style=
                 '<style>'+
                 '.eps_menu { position: absolute; top: 10px; right: 20px; z-index: 15; '+
@@ -819,12 +819,13 @@ function main(){
                 'border: 1px solid #009688; border-radius: 4px; '+
                 'background: #f9fafa; box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.3); } '+
                 '.mh { font: bold 18px Meiryo;  color: #fff; background: #2196f3; '+
-                'text-align: center; padding: 3px 0 0; margin-bottom: 8px; }'+
+                'text-align: center; padding: 3px 0 0; margin-bottom: 8px; } '+
+                '.epalette_help { position: absolute; top: 11px; right: 24px; } '+
                 '</style>';
 
             let menu_s=
                 '<div class="eps_menu">'+
-                '<p class="mh">〔 Elements Palette Menu +Shift 〕</p>'+
+                '<p class="mh">〔 Elements Palette Menu 〕'+ help +'</p>'+
                 'Pause+Shift ➔ F1　　リンクアイコン<br>'+
                 'Pause+Shift ➔ F2　　リロードアイコン<br>'+
                 'Pause+Shift ➔ F3　　ペンアイコン<br>'+
@@ -836,7 +837,7 @@ function main(){
                 'Pause+Shift ➔ F9　　<br>'+
                 'Pause+Shift ➔ F10　 <br>'+
                 'Pause+Shift ➔ F11　 HTMLデータのペースト<br>'+
-                'Pause+Shift ➔ F12　「Pause+Shift」メニュー<br>'+
+                'Pause+Shift ➔ F12　 サブメニュー<br>'+
                 eps_style +'</div>';
 
             if(!document.querySelector('.eps_menu')){
@@ -886,4 +887,3 @@ function main(){
 
     } // set_mark
 } // main()
-
