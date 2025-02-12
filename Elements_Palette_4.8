@@ -110,7 +110,8 @@ function main(){
                 set_mark(send); }
 
             if(event.keyCode==27){ //「ESC」でメニューを閉じる
-                menu_close(); }
+                close_ep();
+                close_eps(); }
 
         } // check_key
 
@@ -535,10 +536,9 @@ function main(){
 
             if(!document.querySelector('.ep_menu')){
                 document.querySelector('.l-body').insertAdjacentHTML('beforeend', menu);
-                if(document.querySelector('.eps_menu')){
-                    document.querySelector('.eps_menu').remove(); }}
+                close_eps(); }
             else{
-                document.querySelector('.ep_menu').remove(); }
+                close_ep(); }
 
 
 
@@ -856,10 +856,9 @@ function main(){
 
             if(!document.querySelector('.eps_menu')){
                 document.querySelector('.l-body').insertAdjacentHTML('beforeend', menu_s);
-                if(document.querySelector('.ep_menu')){
-                    document.querySelector('.ep_menu').remove(); }}
+                close_ep(); }
             else{
-                document.querySelector('.eps_menu').remove(); }
+                close_eps(); }
         } // F12 +Shift
 
 
@@ -901,23 +900,25 @@ function main(){
 
 
 
-
         let ep_close=document.querySelector('.ep_close');
         if(ep_close){
             ep_close.onclick=()=>{
-                menu_close(); }}
+                close_ep();
+                close_eps(); }}
 
     } // set_mark
 
 
 
 
-    function menu_close(){ // メイン・サブのメニューを閉じる
-        let ep_menu=document.querySelector('.ep_menu');
-        let eps_menu=document.querySelector('.eps_menu');
-        if(ep_menu){
-            ep_menu.remove(); }
-        else if(eps_menu){
-            eps_menu.remove(); }}
+    function close_ep(){ // メインメニューを閉じる
+        let ep=document.querySelector('.ep_menu');
+        if(ep){
+            ep.remove(); }}
+
+    function close_eps(){ // サブメニューを閉じる
+        let eps=document.querySelector('.eps_menu');
+        if(eps){
+            eps.remove(); }}
 
 } // main()
