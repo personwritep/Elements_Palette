@@ -1,7 +1,7 @@
 // ==UserScript==
-// @name        Elements Palette ⭐
+// @name        Elements Palette ⭐ 🔲
 // @namespace        http://tampermonkey.net/
-// @version        4.8
+// @version        4.9
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventry*
@@ -484,7 +484,12 @@ function main(){
                 '.ep_close { position: absolute; top: 14px; right: 24px; height: 20px; '+
                 'line-height: 24px; padding: 0 2px; border: 1px solid #fff; '+
                 'border-radius: 3px; cursor: pointer; } '+
-                '.ep_menu input { height: 18px; font-family: system-ui; text-align: center; } '+
+                '.ep_menu input { height: 18px; font-family: system-ui; text-align: center; '+
+                'line-height: 20px; } '+
+
+                '.ep_menu input[type="number"]::-webkit-inner-spin-button { '+
+                'height: 16px; margin-top: 2px; } '+
+
                 '#F3w { width: 30px; margin-right: 8px; } #F4w { width: 38px; } '+
                 '#F6w { width: 28px; } #F6r { width: 34px; } '+
                 '#F6f, #F6s { margin-right: 4px; vertical-align: -3px; cursor: pointer; } '+
