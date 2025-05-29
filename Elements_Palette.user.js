@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        Elements Palette ⭐ 🔲
+// @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
 // @version        4.9
 // @description        編集枠に各種要素を自動記入するツール
