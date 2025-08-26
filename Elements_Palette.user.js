@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
-// @version        4.9
+// @version        5.0
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventry*
@@ -772,7 +772,16 @@ function main(){
 
 
 
-        if(sender==218){ // F7 +Shift
+        if(sender==218){ // F7 +Shift　　スムーズスクロール抑止
+            let style_stext='html { scroll-behavior: unset !important; }';
+            let insert_style=iframe_doc.createElement('style');
+            insert_style.classList.add('fastscroll');
+            insert_style.textContent=style_stext;
+            if(!iframe_body.querySelector('.fastscroll')){
+                iframe_body.prepend(insert_style);
+                alert('「styleタグ」を設置しました'); }
+            else{
+                alert('スムーズスクロール抑止の「styleタグ」は設置済です'); }
         } // F7 +Shift
 
 
@@ -851,7 +860,7 @@ function main(){
                 'Pause+Shift ➔ F4　　鍵アイコン<br>'+
                 'Pause+Shift ➔ F5　　（無効）<br>'+
                 'Pause+Shift ➔ F6　　リブログカードを修飾<br>'+
-                'Pause+Shift ➔ F7　　<br>'+
+                'Pause+Shift ➔ F7　　スムーズスクロール抑止<br>'+
                 'Pause+Shift ➔ F8　　<br>'+
                 'Pause+Shift ➔ F9　　<br>'+
                 'Pause+Shift ➔ F10　 <br>'+
