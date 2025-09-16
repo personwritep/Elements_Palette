@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
-// @version        5.0
+// @version        5.1
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventry*
@@ -154,7 +154,7 @@ function main(){
 
 
         if(sender==112){ // F1　　h2 見出しの自動記入
-            let style_text='background: #b0e0e6; padding: .32em 1em .2em'; // h2のデザイン
+            let style_text='background: #b0e0e6; padding: .26em 1em .24em'; // h2のデザイン
             let font_size='font-size: 1em'; // h2のフォントサイズ
 
             let insert_node_h;
@@ -187,7 +187,7 @@ function main(){
 
 
         if(sender==113){ // F2　　h3 見出しの自動記入
-            let style_text='background: #ddd; padding: .32em 1em .2em'; // h3のデザイン
+            let style_text='background: #ddd; padding: .26em 1em .24em'; // h3のデザイン
             let font_size='font-size: 1em'; // h3のフォントサイズ
 
             let insert_node_h;
