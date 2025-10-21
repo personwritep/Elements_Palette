@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
-// @version        5.1
+// @version        5.2
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventry*
@@ -37,8 +37,14 @@ function main(){
 
     let read_json=localStorage.getItem('EP_Preset'); // ローカルストレージ 保存名
     ep_preset=JSON.parse(read_json);
+    let sure= // 期待される配列の雛形
+        [0, 2, "#2277dd", 0.6, "#4dffc9", 1, "#ff0000", 0, "#ffffff", 0, 0.5, 0, 1, 540, "#ffffff"];
     if(ep_preset==null){
-        ep_preset=[0, 2, "#2277dd", 0.6, "#4dffc9", 1, "#ff0000", 0, "#ffffff", 0, 0.5, 0]; }
+        ep_preset=[...sure]; }
+    else if(ep_preset.length<15){
+        for(let k=0; k<15; k++){
+            if(ep_preset[k]===undefined){
+                ep_preset[k]=sure[k]; }}}
     let write_json=JSON.stringify(ep_preset);
     localStorage.setItem('EP_Preset', write_json); // ローカルストレージ 保存
 
@@ -484,9 +490,9 @@ function main(){
                 '.ep_close { position: absolute; top: 14px; right: 24px; height: 20px; '+
                 'line-height: 24px; padding: 0 2px; border: 1px solid #fff; '+
                 'border-radius: 3px; cursor: pointer; } '+
+
                 '.ep_menu input { height: 18px; font-family: system-ui; text-align: center; '+
                 'line-height: 20px; } '+
-
                 '.ep_menu input[type="number"]::-webkit-inner-spin-button { '+
                 'height: 16px; margin-top: 2px; } '+
 
@@ -498,9 +504,9 @@ function main(){
 
             if(ua==1){
                 ep_style+=
-                    '#F3w, #F6w { width: 34px; } #F4w, #F10 { width: 44px; } '+
+                    '#F3w, #F6w, #SF8f { width: 34px; } #F4w, #F10 { width: 44px; } '+
                     '#F6r { width: 38px; } #F6f, #F6s { vertical-align: -1px; } '+
-                    '#F3c, #F4c, #F6c, #F6b { height: 18px; width: 18px; } '; }
+                    '#F3c, #F4c, #F6c, #F6b, #SF8c { height: 18px; width: 18px; } '; }
 
             ep_style+='</style>';
 
@@ -786,7 +792,30 @@ function main(){
 
 
 
-        if(sender==219){ // F8 +Shift
+        if(sender==219){ // F8 +Shift　　目次のデザイン修飾
+            let toc_style=iframe_body.querySelector('nav > style');
+            if(toc_style){
+                let stx=toc_style.textContent;
+                if(stx){
+                    stx=stx.replaceAll('font-weight:700', 'font-weight:400');
+                    let pattern0=/toc\]{background:.+?;border/;
+                    let back='toc]{background:'+ ep_preset[14] +';border';
+                    stx=stx.replace(pattern0, back);
+                    stx=stx.replace('border-radius:8px;', 'border-radius:6px;margin: 0 auto;');
+                    let pattern1=/padding:12px 16px.+?\[/;
+                    let width='padding:12px 16px;width:400px;max-width:100%}[';
+                    stx=stx.replace(pattern1, width);
+                    stx=stx.replace('.toc-header) h2{color:', '.toc-header) h2{font-weight:400;color:');
+                    let font2='#08121abd);font-size:'+ ep_preset[12] +'em !important;}';
+                    let pattern2=/#08121abd\);font-size:.+?}/;
+                    stx=stx.replace(pattern2, font2);
+                    stx=stx.replace('list-style:none;padding:0}', 'list-style:none;padding:0 0 0 1em}');
+                    stx=stx.replace('padding:6px 0;', 'padding:5px 0 2px;line-height:1.2;');
+                    let pattern3=/display:block;font-size:.+?em;/;
+                    let font3='display:block;font-size:'+ ep_preset[12] +'em;';
+                    stx=stx.replace(pattern3, font3);
+
+                    toc_style.textContent=stx; }}
         } // F8 +Shift
 
 
@@ -848,7 +877,23 @@ function main(){
                 '.ep_close { position: absolute; top: 14px; right: 24px; height: 20px; '+
                 'line-height: 24px; padding: 0 2px; border: 1px solid #fff; '+
                 'border-radius: 3px; cursor: pointer; } '+
-                '</style>';
+
+                '.eps_menu input { height: 18px; font-family: system-ui; text-align: center; '+
+                'line-height: 20px; } '+
+                '.eps_menu input[type="number"]::-webkit-inner-spin-button { '+
+                'height: 16px; margin-top: 2px; } '+
+
+                '#SF8f { width: 48px; margin-right: 2px; } '+
+                '#SF8c { height: 26px; width: 22px; border: none; background: none; '+
+                'vertical-align: -3px; cursor: pointer; } ';
+
+            if(ua==1){
+                eps_style+=
+                    '#SF8f { width: 54px; } '+
+                    '#SF8c { height: 18px; width: 18px; } '; }
+
+            eps_style+='</style>';
+
 
             let menu_s=
                 '<div class="eps_menu">'+
@@ -861,7 +906,9 @@ function main(){
                 'Pause+Shift ➔ F5　　（無効）<br>'+
                 'Pause+Shift ➔ F6　　リブログカードを修飾<br>'+
                 'Pause+Shift ➔ F7　　スムーズスクロール抑止<br>'+
-                'Pause+Shift ➔ F8　　<br>'+
+                'Pause+Shift ➔ F8　　目次のデザイン修飾<br>　　　　フォントサイズ '+
+                '<input id="SF8f" type="number" step="0.05" min="0.6" max="1.2">em'+
+                '　背景色 <input id="SF8c" type="color"><br>'+
                 'Pause+Shift ➔ F9　　<br>'+
                 'Pause+Shift ➔ F10　 <br>'+
                 'Pause+Shift ➔ F11　 HTMLデータのペースト<br>'+
@@ -873,6 +920,28 @@ function main(){
                 close_ep(); }
             else{
                 close_eps(); }
+
+
+            let SF8f=document.querySelector('#SF8f');
+            if(SF8f){
+                SF8f.value=ep_preset[12].toFixed(2);
+
+                SF8f.addEventListener("input", function(){
+                    ep_preset[12]=parseFloat(SF8f.value);
+                    SF8f.value=ep_preset[12].toFixed(2);
+                    let write_json=JSON.stringify(ep_preset);
+                    localStorage.setItem('EP_Preset', write_json); }); }
+
+
+            let SF8c=document.querySelector('#SF8c');
+            if(SF8c){
+                SF8c.value=ep_preset[14];
+
+                SF8c.addEventListener("change", function(){
+                    ep_preset[14]=SF8c.value;
+                    let write_json=JSON.stringify(ep_preset);
+                    localStorage.setItem('EP_Preset', write_json); }); }
+
         } // F12 +Shift
 
 
