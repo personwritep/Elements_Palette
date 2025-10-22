@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
-// @version        5.2
+// @version        5.3
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventry*
@@ -799,11 +799,11 @@ function main(){
                 if(stx){
                     stx=stx.replaceAll('font-weight:700', 'font-weight:400');
                     let pattern0=/toc\]{background:.+?;border/;
-                    let back='toc]{background:'+ ep_preset[14] +';border';
+                    let back='toc]{background:'+ ep_preset[14] +';box-sizing:border-box;border';
                     stx=stx.replace(pattern0, back);
-                    stx=stx.replace('border-radius:8px;', 'border-radius:6px;margin: 0 auto;');
+                    stx=stx.replace('border-radius:8px;', 'border-radius:6px;margin:0 auto;');
                     let pattern1=/padding:12px 16px.+?\[/;
-                    let width='padding:12px 16px;width:400px;max-width:100%}[';
+                    let width='padding:12px 16px;width:'+ ep_preset[13] +'px;max-width:100%}[';
                     stx=stx.replace(pattern1, width);
                     stx=stx.replace('.toc-header) h2{color:', '.toc-header) h2{font-weight:400;color:');
                     let font2='#08121abd);font-size:'+ ep_preset[12] +'em !important;}';
@@ -883,13 +883,13 @@ function main(){
                 '.eps_menu input[type="number"]::-webkit-inner-spin-button { '+
                 'height: 16px; margin-top: 2px; } '+
 
-                '#SF8f { width: 48px; margin-right: 2px; } '+
+                '#SF8f, #SF8w { width: 48px; margin-right: 2px; } '+
                 '#SF8c { height: 26px; width: 22px; border: none; background: none; '+
                 'vertical-align: -3px; cursor: pointer; } ';
 
             if(ua==1){
                 eps_style+=
-                    '#SF8f { width: 54px; } '+
+                    '#SF8f, #SF8w { width: 54px; } '+
                     '#SF8c { height: 18px; width: 18px; } '; }
 
             eps_style+='</style>';
@@ -906,8 +906,9 @@ function main(){
                 'Pause+Shift ➔ F5　　（無効）<br>'+
                 'Pause+Shift ➔ F6　　リブログカードを修飾<br>'+
                 'Pause+Shift ➔ F7　　スムーズスクロール抑止<br>'+
-                'Pause+Shift ➔ F8　　目次のデザイン修飾<br>　　　　フォントサイズ '+
-                '<input id="SF8f" type="number" step="0.05" min="0.6" max="1.2">em'+
+                'Pause+Shift ➔ F8　　目次のデザイン修飾<br>'+
+                '　　文字 <input id="SF8f" type="number" step="0.05" min="0.6" max="1.2">em'+
+                '　幅 <input id="SF8w" type="number" step="10" min="360" max="620">px'+
                 '　背景色 <input id="SF8c" type="color"><br>'+
                 'Pause+Shift ➔ F9　　<br>'+
                 'Pause+Shift ➔ F10　 <br>'+
@@ -929,6 +930,21 @@ function main(){
                 SF8f.addEventListener("input", function(){
                     ep_preset[12]=parseFloat(SF8f.value);
                     SF8f.value=ep_preset[12].toFixed(2);
+                    let write_json=JSON.stringify(ep_preset);
+                    localStorage.setItem('EP_Preset', write_json); }); }
+
+
+            let SF8w=document.querySelector('#SF8w');
+            if(SF8w){
+                SF8w.value=ep_preset[13];
+
+                iframe_body=iframe_doc.querySelector('body.cke_editable');
+                let w_max=iframe_body.clientWidth-16;
+
+                SF8w.addEventListener("input", function(){
+                    if(parseFloat(SF8w.value)>w_max){
+                        SF8w.value=w_max; }
+                    ep_preset[13]=parseFloat(SF8w.value);
                     let write_json=JSON.stringify(ep_preset);
                     localStorage.setItem('EP_Preset', write_json); }); }
 
