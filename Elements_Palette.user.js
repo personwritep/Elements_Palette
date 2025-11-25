@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
-// @version        5.3
+// @version        5.4
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventry*
@@ -166,7 +166,7 @@ function main(){
             let insert_node_h;
             let h_tag=
                 '<h2 style="'+ font_size +'">'+
-                '<span style="'+ style_text +'">\u200A</span></h2>';
+                '<span style="'+ style_text +'">▮</span></h2>';
 
             if(ac_node.nodeType==3 &&
                ac_node.parentNode.tagName=='P' &&
@@ -199,7 +199,7 @@ function main(){
             let insert_node_h;
             let h_tag=
                 '<h3 style="'+ font_size +'">'+
-                '<span style="'+ style_text +'">\u200A</span></h3>';
+                '<span style="'+ style_text +'">▮</span></h2>';
 
             if(ac_node.nodeType==3 &&
                ac_node.parentNode.tagName=='P' &&
