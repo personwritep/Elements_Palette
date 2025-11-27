@@ -166,7 +166,7 @@ function main(){
             let insert_node_h;
             let h_tag=
                 '<h2 style="'+ font_size +'">'+
-                '<span style="'+ style_text +'">▮</span></h2>';
+                '<span style="'+ style_text +'"><br></span></h2>';
 
             if(ac_node.nodeType==3 &&
                ac_node.parentNode.tagName=='P' &&
@@ -199,7 +199,7 @@ function main(){
             let insert_node_h;
             let h_tag=
                 '<h3 style="'+ font_size +'">'+
-                '<span style="'+ style_text +'">▮</span></h2>';
+                '<span style="'+ style_text +'"><br></span></h2>';
 
             if(ac_node.nodeType==3 &&
                ac_node.parentNode.tagName=='P' &&
