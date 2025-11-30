@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
-// @version        5.4
+// @version        5.5
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventry*
@@ -678,7 +678,39 @@ function main(){
 
 
 
-        if(sender==212){ // F1 +Shift　　Font Awesome リンクアイコンの自動記入
+        if(sender==212){ // F1 +Shift　　h4 見出しの自動記入
+            let insert_node_h;
+            let h_tag=
+                '<h4 style="font-size: 1em; margin: 0.6em 0;">'+
+                '<span style="padding: 2px 0.6em 2px; line-height: 1.5; background: #fff; '+
+                'border: 1px solid #0080ff; border-radius: 2px; max-width: 660px;"><br>'+
+                '</span></h4>';
+
+            if(ac_node.nodeType==3 &&
+               ac_node.parentNode.tagName=='P' &&
+               ac_node.parentNode.parentNode.tagName=='BODY'){
+                ac_node.parentNode.insertAdjacentHTML('beforebegin', h_tag);
+                setTimeout(()=>{
+                    insert_node_h=ac_node.parentNode.previousElementSibling;
+                    h_before_after(insert_node_h);
+                    h_when_end(insert_node_h);
+                }, 20);
+            } // h要素生成の条件 通常のP要素のテキストノードから作成
+
+            if(ac_node.tagName=='P' &&
+               ac_node.firstChild.tagName=="BR" && ac_node.parentNode.tagName=='BODY'){
+                ac_node.insertAdjacentHTML('beforebegin', h_tag);
+                setTimeout(()=>{
+                    insert_node_h=ac_node.previousElementSibling;
+                    h_before_after(insert_node_h);
+                    h_when_end(insert_node_h);
+                }, 20);
+            } // h要素生成の条件 空白行から作成
+        } // F1 +Shift
+
+
+
+        if(sender==213){ // F2 +Shift　　Font Awesome リンクアイコンの自動記入
             let insert_node_z;
             insert_node=iframe_doc.createElement('i');
             insert_node.appendChild(iframe_doc.createTextNode('\u00A0'));
@@ -690,11 +722,11 @@ function main(){
             insert_node.parentNode.insertBefore(insert_node_z, insert_node.nextSibling);
             range.setEnd(insert_node_z.nextSibling, 0);
             range.collapse(); // フォーカスを失わないでrangeを閉じる
-        } // F1 +Shift
+        } // F2 +Shift
 
 
 
-        if(sender==213){ // F2 +Shift　　Font Awesome リロードアイコンの自動記入
+        if(sender==214){ // F3 +Shift　　Font Awesome リロードアイコンの自動記入
             let insert_node_z;
             insert_node=iframe_doc.createElement('i');
             insert_node.appendChild(iframe_doc.createTextNode('\u00A0'));
@@ -706,31 +738,15 @@ function main(){
             insert_node.parentNode.insertBefore(insert_node_z, insert_node.nextSibling);
             range.setEnd(insert_node_z.nextSibling, 0);
             range.collapse(); // フォーカスを失わないでrangeを閉じる
-        } // F2 +Shift
-
-
-
-        if(sender==214){ // F3 +Shift　　Font Awesome ペンアイコンの自動記入
-            let insert_node_z;
-            insert_node=iframe_doc.createElement('i');
-            insert_node.appendChild(iframe_doc.createTextNode('\u00A0'));
-            insert_node.setAttribute('class', 'fa-solid fa-pen');
-            insert_node.setAttribute('style', 'margin-left: .5em');
-            range.insertNode(insert_node);
-
-            insert_node_z=iframe_doc.createTextNode('\u200A');
-            insert_node.parentNode.insertBefore(insert_node_z, insert_node.nextSibling);
-            range.setEnd(insert_node_z.nextSibling, 0);
-            range.collapse(); // フォーカスを失わないでrangeを閉じる
         } // F3 +Shift
 
 
 
-        if(sender==215){ // F4 +Shift　　鍵アイコンの自動記入
+        if(sender==215){ // F4 +Shift　　Font Awesome ペンアイコンの自動記入
             let insert_node_z;
             insert_node=iframe_doc.createElement('i');
             insert_node.appendChild(iframe_doc.createTextNode('\u00A0'));
-            insert_node.setAttribute('class', 'fa-solid fa-lock');
+            insert_node.setAttribute('class', 'fa-solid fa-pen');
             insert_node.setAttribute('style', 'margin-left: .5em');
             range.insertNode(insert_node);
 
@@ -899,10 +915,10 @@ function main(){
                 '<div class="eps_menu">'+
                 '<p class="mh">'+ help +'〔 Elements Palette Menu 〕'+
                 '<span class="ep_close">✖</span></p>'+
-                'Pause+Shift ➔ F1　　リンクアイコン<br>'+
-                'Pause+Shift ➔ F2　　リロードアイコン<br>'+
-                'Pause+Shift ➔ F3　　ペンアイコン<br>'+
-                'Pause+Shift ➔ F4　　鍵アイコン<br>'+
+                'Pause+Shift ➔ F1　　h4 見出し<br>'+
+                'Pause+Shift ➔ F2　　リンクアイコン<br>'+
+                'Pause+Shift ➔ F3　　リロードアイコン<br>'+
+                'Pause+Shift ➔ F4　　ペンアイコン<br>'+
                 'Pause+Shift ➔ F5　　（無効）<br>'+
                 'Pause+Shift ➔ F6　　リブログカードを修飾<br>'+
                 'Pause+Shift ➔ F7　　スムーズスクロール抑止<br>'+
