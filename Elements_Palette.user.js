@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
-// @version        5.5
+// @version        5.6
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventry*
@@ -455,24 +455,38 @@ function main(){
 
 
 
-        if(sender==122){ // F11　　選択範囲の「カギ括弧」⇄「半角カギ括弧」の変換
-            //  '｢' (\uFF62)  '｣' (\uFF63) の文字へ置換え
-            let r_text=range.toString();
+        if(sender==122){ // F11　　HTMLデータのペースト
+            let insert_node_d;
+            let d_tag='<div id="d_clip">\u0020</div>';
 
-            if(r_text.match( /「|」/ ) !=null){
-                r_text=r_text.replace(/「/g, '\u2006｢').replace(/」/g, '｣\u2006');
-                let insert_node=document.createTextNode(r_text);
-                try{
-                    range.surroundContents(insert_node); }
-                catch(e){;}}
-            else{
-                if(r_text.match( /\u2006｢|｣\u2006|｢|｣/ ) !=null){
-                    r_text=r_text.replace(/\u2006｢/g, '「').replace(/｣\u2006/g, '」')
-                        .replace(/｣/g, '」').replace(/｢/g, '「');
-                    let insert_node=document.createTextNode(r_text);
-                    try{
-                        range.surroundContents(insert_node); }
-                    catch(e){;}}}
+            // div要素生成の条件　通常のP要素またはDIV要素のテキストノードから作成
+            if(ac_node.nodeType==3 &&
+               (ac_node.parentNode.tagName=='P' || ac_node.parentNode.tagName=='DIV')){
+                insert_node_d=iframe_doc.createElement('span');
+                insert_node_d.appendChild(iframe_doc.createTextNode('\u0020'));
+                insert_node_d.setAttribute('id', 'd_clip');
+                range.insertNode(insert_node_d);
+                range.setStartAfter(insert_node_d);
+                range.collapse(); }
+
+
+            // div要素生成の条件 空白行から作成
+            else if(ac_node.tagName=='P' &&
+                    ac_node.firstChild.tagName=='BR'){
+                ac_node.insertAdjacentHTML('beforebegin', d_tag);
+                setTimeout(()=>{
+                    insert_node_d=ac_node.previousElementSibling;
+                    d_before_after(insert_node_d, 1);
+                    d_when_end(insert_node_d);
+                }, 20); }
+
+
+            let core=iframe_doc.querySelector('#d_clip');
+            if(core){
+                if(navigator.clipboard){
+                    navigator.clipboard.readText()
+                        .then(function(text){
+                        core.outerHTML=text; }); }}
         } // F11
 
 
@@ -535,7 +549,7 @@ function main(){
                 'Pause ➔ F9　　文書末尾に空白行追加<br>'+
                 'Pause ➔ F10　 空白行に行間隔を指定　 '+
                 '<input id="F10" type="number" step="0.1" min="0" max="3"><br>'+
-                'Pause ➔ F11　「カギ括弧」全角 ⇄ 半角 変換<br>'+
+                'Pause ➔ F11　　HTMLデータのペースト<br>'+
                 'Pause ➔ F12　「Elements Palette」メニュー<br>'+
                 '<br>'+
                 '<p class="mh">〔 Fixed Format Palette Menu 〕</p>'+
@@ -846,36 +860,24 @@ function main(){
 
 
 
-        if(sender==222){ // F11 +Shift　　HTMLデータのペースト
-            let insert_node_d;
-            let d_tag='<div id="p_clip">\u0020</div>';
+        if(sender==222){ // F11 +Shift　　選択範囲の「カギ括弧」⇄「半角カギ括弧」の変換
+            //  '｢' (\uFF62)  '｣' (\uFF63) の文字へ置換え
+            let r_text=range.toString();
 
-            // div要素生成の条件　通常のP要素またはDIV要素のテキストノードから作成
-            if(ac_node.nodeType==3 &&
-               (ac_node.parentNode.tagName=='P' || ac_node.parentNode.tagName=='DIV')){
-                ac_node.parentNode.insertAdjacentHTML('afterend', d_tag);
-                setTimeout(()=>{
-                    insert_node_d=ac_node.parentNode.nextElementSibling;
-                    d_before_after(insert_node_d, 1);
-                    d_when_end(insert_node_d);
-                }, 20); }
-
-            // div要素生成の条件 空白行から作成
-            else if(ac_node.tagName=='P' &&
-                    ac_node.firstChild.tagName=='BR'){
-                ac_node.insertAdjacentHTML('beforebegin', d_tag);
-                setTimeout(()=>{
-                    insert_node_d=ac_node.previousElementSibling;
-                    d_before_after(insert_node_d, 1);
-                    d_when_end(insert_node_d);
-                }, 20); }
-
-            let core=iframe_doc.querySelector('#p_clip');
-            if(core){
-                if(navigator.clipboard){
-                    navigator.clipboard.readText()
-                        .then(function(text){
-                        core.outerHTML=text; }); }}
+            if(r_text.match( /「|」/ ) !=null){
+                r_text=r_text.replace(/「/g, '\u2006｢').replace(/」/g, '｣\u2006');
+                let insert_node=document.createTextNode(r_text);
+                try{
+                    range.surroundContents(insert_node); }
+                catch(e){;}}
+            else{
+                if(r_text.match( /\u2006｢|｣\u2006|｢|｣/ ) !=null){
+                    r_text=r_text.replace(/\u2006｢/g, '「').replace(/｣\u2006/g, '」')
+                        .replace(/｣/g, '」').replace(/｢/g, '「');
+                    let insert_node=document.createTextNode(r_text);
+                    try{
+                        range.surroundContents(insert_node); }
+                    catch(e){;}}}
         } // F11 +Shift
 
 
@@ -928,7 +930,7 @@ function main(){
                 '　背景色 <input id="SF8c" type="color"><br>'+
                 'Pause+Shift ➔ F9　　<br>'+
                 'Pause+Shift ➔ F10　 <br>'+
-                'Pause+Shift ➔ F11　 HTMLデータのペースト<br>'+
+                'Pause+Shift ➔ F11　「カギ括弧」全角 ⇄ 半角 変換<br>'+
                 'Pause+Shift ➔ F12　 サブメニュー<br>'+
                 eps_style +'</div>';
 
