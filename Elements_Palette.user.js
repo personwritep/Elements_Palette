@@ -930,7 +930,7 @@ function main(){
                 '　背景色 <input id="SF8c" type="color"><br>'+
                 'Pause+Shift ➔ F9　　<br>'+
                 'Pause+Shift ➔ F10　 <br>'+
-                'Pause+Shift ➔ F11　「カギ括弧」全角 ⇄ 半角 変換<br>'+
+                'Pause+Shift ➔ F11　「カギ括弧」全角 ⇄ 半角<br>'+
                 'Pause+Shift ➔ F12　 サブメニュー<br>'+
                 eps_style +'</div>';
 
