@@ -463,12 +463,10 @@ function main(){
             if(ac_node.nodeType==3 &&
                (ac_node.parentNode.tagName=='P' || ac_node.parentNode.tagName=='DIV')){
                 insert_node_d=iframe_doc.createElement('span');
-                insert_node_d.appendChild(iframe_doc.createTextNode('\u0020'));
                 insert_node_d.setAttribute('id', 'd_clip');
                 range.insertNode(insert_node_d);
-                range.setStartAfter(insert_node_d);
+                range.setEnd(ac_node, range.startOffset); // rangeの終了位置を指定
                 range.collapse(); }
-
 
             // div要素生成の条件 空白行から作成
             else if(ac_node.tagName=='P' &&
