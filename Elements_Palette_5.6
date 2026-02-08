@@ -26,6 +26,7 @@ function wait_target(){
 
 
 
+
 function main(){
     let ua=0;
     let agent=window.navigator.userAgent.toLowerCase();
@@ -116,12 +117,13 @@ function main(){
                 set_mark(send); }
 
             if(event.keyCode==27){ //「ESC」でメニューを閉じる
-                close_ep();
-                close_eps(); }
+                close_main_menu();
+                close_sub_menu(); }
 
         } // check_key
 
     } // catch_key
+
 
 
 
@@ -142,20 +144,6 @@ function main(){
         selection=iframe_doc.getSelection();
         range=selection.getRangeAt(0);
         ac_node=selection.anchorNode;
-
-
-
-        let help_url='https://ameblo.jp/personwritep/entry-12803137359.html';
-
-        let help=
-            '<a class="epalette_help" href="'+ help_url +'" target="_blank">'+
-            '<svg width="20" height="24" viewBox="0 -20 150 150">'+
-            '<path  fill="#fff" d="M66 13C56 15 47 18 39 24C-12 60 18 146 82 137C92 '+
-            '135 102 131 110 126C162 90 128 4 66 13M68 25C131 17 145 117 81 '+
-            '125C16 133 3 34 68 25M69 40C61 41 39 58 58 61C66 63 73 47 82 57C84 '+
-            '60 83 62 81 65C77 70 52 90 76 89C82 89 82 84 86 81C92 76 98 74 100 66'+
-            'C105 48 84 37 69 40M70 94C58 99 66 118 78 112C90 107 82 89 70 94z">'+
-            '</path></svg></a>';
 
 
 
@@ -490,78 +478,46 @@ function main(){
 
 
         if(sender==123){ // F12　　「Elements Palette」のメニュー表示
-            let ep_style=
-                '<style>'+
-                '.ep_menu { position: absolute; top: 10px; right: 20px; z-index: 15; '+
-                'font: 16px/26px Meiryo; width: 360px; padding: .6em 1em; '+
-                'border: 1px solid #009688; border-radius: 4px; '+
-                'background: #f9fafa; box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.3); } '+
-                '.mh { font: bold 18px Meiryo;  color: #fff; background: #2196f3; '+
-                'text-align: center; padding: 3px 0 0; margin-bottom: 8px; } '+
-                '.epalette_help { position: absolute; top: 11px; left: 24px; } '+
-                '.ep_close { position: absolute; top: 14px; right: 24px; height: 20px; '+
-                'line-height: 24px; padding: 0 2px; border: 1px solid #fff; '+
-                'border-radius: 3px; cursor: pointer; } '+
-
-                '.ep_menu input { height: 18px; font-family: system-ui; text-align: center; '+
-                'line-height: 20px; } '+
-                '.ep_menu input[type="number"]::-webkit-inner-spin-button { '+
-                'height: 16px; margin-top: 2px; } '+
-
-                '#F3w { width: 30px; margin-right: 8px; } #F4w { width: 38px; } '+
-                '#F6w { width: 28px; } #F6r { width: 34px; } '+
-                '#F6f, #F6s { margin-right: 4px; vertical-align: -3px; cursor: pointer; } '+
-                '#F3c, #F4c, #F6c, #F6b { height: 26px; width: 22px; border: none; '+
-                'background: none; vertical-align: -3px; cursor: pointer; } #F10 { width: 40px; } ';
-
-            if(ua==1){
-                ep_style+=
-                    '#F3w, #F6w, #SF8f { width: 34px; } #F4w, #F10 { width: 44px; } '+
-                    '#F6r { width: 38px; } #F6f, #F6s { vertical-align: -1px; } '+
-                    '#F3c, #F4c, #F6c, #F6b, #SF8c { height: 18px; width: 18px; } '; }
-
-            ep_style+='</style>';
-
-
             let menu=
-                '<div class="ep_menu">'+
+                '<div class="ep_menu main_menu">'+
                 '<p class="mh">'+ help +'〔 Elements Palette Menu 〕'+
                 '<span class="ep_close">✖</span></p>'+
-                'Pause ➔ F1　　h2 見出し<br>'+
-                'Pause ➔ F2　　h3 見出し<br>'+
-                'Pause ➔ F3　　アンダーライン　　<br>　　　　　　　　線幅 '+
-                '<input id="F3w" type="number" step="1" min="1" max="4">'+
-                '　線色 <input id="F3c" type="color"><br>'+
-                'Pause ➔ F4　　マーカー線　　　　<br>　　　　　　　　線幅 '+
-                '<input id="F4w" type="number" step="0.1" step="0.1" min="0.1" max="1.2">'+
-                '　線色 <input id="F4c" type="color"><br>'+
-                'Pause ➔ F5　　（無効）<br>'+
-                'Pause ➔ F6　　囲み枠　<input id="F6f" type="checkbox">幅フィット'+
-                '　<input id="F6s" type="checkbox">小型<br>'+
-                '　　　　　　　　幅 <input id="F6w" type="number" step="1" min="-1" max="9">'+
-                ' <input id="F6c" type="color">'+
-                ' 角 <input id="F6r" type="number" step="1" min="0" max="20">'+
-                ' 背景色 <input id="F6b" type="color"><br>'+
-                'Pause ➔ F7　　PRE枠<br>'+
-                'Pause ➔ F8　　PRE枠（スクロールタイプ）<br>'+
-                'Pause ➔ F9　　文書末尾に空白行追加<br>'+
-                'Pause ➔ F10　 空白行に行間隔を指定　 '+
-                '<input id="F10" type="number" step="0.1" min="0" max="3"><br>'+
-                'Pause ➔ F11　　HTMLデータのペースト<br>'+
-                'Pause ➔ F12　「Elements Palette」メニュー<br>'+
-                '<br>'+
+                '<p class="fn">Pause ➔ F1　　h2 見出し</p>'+
+                '<p class="fn">Pause ➔ F2　　h3 見出し</p>'+
+                '<p class="fn">Pause ➔ F3　　アンダーライン　幅 '+
+                '<input id="F3w" type="number" step="1" min="1" max="4">　'+
+                '<input id="F3c" type="color"></p>'+
+                '<p class="fn">Pause ➔ F4　　マーカー線　　　幅 '+
+                '<input id="F4w" type="number" step="0.1" step="0.1" min="0.1" max="1.2">　'+
+                '<input id="F4c" type="color"></p>'+
+                '<p class="fn">Pause ➔ F5　　（無効）</p>'+
+                '<p class="fn">Pause ➔ F6　　囲み枠　'+
+                '<input id="F6f" type="checkbox">幅フィット　'+
+                '<input id="F6s" type="checkbox">小型</p>'+
+                '<p class="fn">　　　　　　　　幅 '+
+                '<input id="F6w" type="number" step="1" min="-1" max="9"> '+
+                '<input id="F6c" type="color"> 角 '+
+                '<input id="F6r" type="number" step="1" min="0" max="20"> 背景色 '+
+                '<input id="F6b" type="color"></p>'+
+                '<p class="fn">Pause ➔ F7　　PRE枠</p>'+
+                '<p class="fn">Pause ➔ F8　　PRE枠（スクロールタイプ）</p>'+
+                '<p class="fn">Pause ➔ F9　　文書末尾に空白行追加</p>'+
+                '<p class="fn">Pause ➔ F10　 空白行に行間隔を指定 　'+
+                '<input id="F10" type="number" step="0.1" min="0" max="3"></p>'+
+                '<p class="fn">Pause ➔ F11　 クリップボードのHTMLペースト</p>'+
+                '<p class="fn">Pause ➔ F12　「Elements Palette」メニュー</p>'+
+                '<p>　</p>'+
                 '<p class="mh">〔 Fixed Format Palette Menu 〕</p>'+
-                'Alt + F11　　　通常表示で選択範囲を登録<br>'+
-                '　　　　　※Chrome/EdgeはHTML登録が可能<br>'+
-                'Ctrl + F11 　　 通常表示で登録内容をペースト'+
+                '<p class="fn">Alt + F11　　　通常表示で選択範囲を登録</p>'+
+                '<p class="fn">　　　　　※Chrome/EdgeはHTML登録が可能</p>'+
+                '<p class="fn">Ctrl + F11 　　 通常表示で登録内容をペースト</p>'+
                 ep_style +'</div>';
 
-
-            if(!document.querySelector('.ep_menu')){
+            if(!document.querySelector('.main_menu')){
                 document.querySelector('.l-body').insertAdjacentHTML('beforeend', menu);
-                close_eps(); }
+                close_sub_menu(); }
             else{
-                close_ep(); }
+                close_main_menu(); }
 
 
 
@@ -881,62 +837,33 @@ function main(){
 
 
         if(sender==223){ // F12 +Shift　　「Elements Palette +Shift」のメニュー表示
-            let eps_style=
-                '<style>'+
-                '.eps_menu { position: absolute; top: 10px; right: 20px; z-index: 15; '+
-                'font: 16px/26px Meiryo; width: 360px; padding: .6em 1em; '+
-                'border: 1px solid #009688; border-radius: 4px; '+
-                'background: #f9fafa; box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.3); } '+
-                '.mh { font: bold 18px Meiryo;  color: #fff; background: #2196f3; '+
-                'text-align: center; padding: 3px 0 0; margin-bottom: 8px; } '+
-                '.epalette_help { position: absolute; top: 11px; left: 24px; } '+
-                '.ep_close { position: absolute; top: 14px; right: 24px; height: 20px; '+
-                'line-height: 24px; padding: 0 2px; border: 1px solid #fff; '+
-                'border-radius: 3px; cursor: pointer; } '+
-
-                '.eps_menu input { height: 18px; font-family: system-ui; text-align: center; '+
-                'line-height: 20px; } '+
-                '.eps_menu input[type="number"]::-webkit-inner-spin-button { '+
-                'height: 16px; margin-top: 2px; } '+
-
-                '#SF8f, #SF8w { width: 48px; margin-right: 2px; } '+
-                '#SF8c { height: 26px; width: 22px; border: none; background: none; '+
-                'vertical-align: -3px; cursor: pointer; } ';
-
-            if(ua==1){
-                eps_style+=
-                    '#SF8f, #SF8w { width: 54px; } '+
-                    '#SF8c { height: 18px; width: 18px; } '; }
-
-            eps_style+='</style>';
-
-
             let menu_s=
-                '<div class="eps_menu">'+
+                '<div class="ep_menu sub_menu">'+
                 '<p class="mh">'+ help +'〔 Elements Palette Menu 〕'+
                 '<span class="ep_close">✖</span></p>'+
-                'Pause+Shift ➔ F1　　h4 見出し<br>'+
-                'Pause+Shift ➔ F2　　リンクアイコン<br>'+
-                'Pause+Shift ➔ F3　　リロードアイコン<br>'+
-                'Pause+Shift ➔ F4　　ペンアイコン<br>'+
-                'Pause+Shift ➔ F5　　（無効）<br>'+
-                'Pause+Shift ➔ F6　　リブログカードを修飾<br>'+
-                'Pause+Shift ➔ F7　　スムーズスクロール抑止<br>'+
-                'Pause+Shift ➔ F8　　目次のデザイン修飾<br>'+
-                '　　文字 <input id="SF8f" type="number" step="0.05" min="0.6" max="1.2">em'+
+                '<p class="fn">Pause+Shift ➔ F1　　h4 見出し</p>'+
+                '<p class="fn">Pause+Shift ➔ F2　　リンクアイコン</p>'+
+                '<p class="fn">Pause+Shift ➔ F3　　リロードアイコン</p>'+
+                '<p class="fn">Pause+Shift ➔ F4　　ペンアイコン</p>'+
+                '<p class="fn">Pause+Shift ➔ F5　　（無効）</p>'+
+                '<p class="fn">Pause+Shift ➔ F6　　リブログカードを修飾</p>'+
+                '<p class="fn">Pause+Shift ➔ F7　　スムーズスクロール抑止</p>'+
+                '<p class="fn">Pause+Shift ➔ F8　　目次のデザイン修飾</p>'+
+                '<p class="fn">　'+
+                '　文字 <input id="SF8f" type="number" step="0.05" min="0.6" max="1.2">em'+
                 '　幅 <input id="SF8w" type="number" step="10" min="360" max="620">px'+
-                '　背景色 <input id="SF8c" type="color"><br>'+
-                'Pause+Shift ➔ F9　　<br>'+
-                'Pause+Shift ➔ F10　 <br>'+
-                'Pause+Shift ➔ F11　「カギ括弧」全角 ⇄ 半角<br>'+
-                'Pause+Shift ➔ F12　 サブメニュー<br>'+
-                eps_style +'</div>';
+                '　背景色 <input id="SF8c" type="color"></p>'+
+                '<p class="fn">Pause+Shift ➔ F9　　</p>'+
+                '<p class="fn">Pause+Shift ➔ F10　 </p>'+
+                '<p class="fn">Pause+Shift ➔ F11　「カギ括弧」全角 ⇄ 半角</p>'+
+                '<p class="fn">Pause+Shift ➔ F12　 サブメニュー</p>'+
+                ep_style +'</div>';
 
-            if(!document.querySelector('.eps_menu')){
+            if(!document.querySelector('.sub_menu')){
                 document.querySelector('.l-body').insertAdjacentHTML('beforeend', menu_s);
-                close_ep(); }
+                close_main_menu(); }
             else{
-                close_eps(); }
+                close_sub_menu(); }
 
 
             let SF8f=document.querySelector('#SF8f');
@@ -1018,22 +945,78 @@ function main(){
         let ep_close=document.querySelector('.ep_close');
         if(ep_close){
             ep_close.onclick=()=>{
-                close_ep();
-                close_eps(); }}
+                close_main_menu();
+                close_sub_menu(); }}
 
     } // set_mark
 
 
 
 
-    function close_ep(){ // メインメニューを閉じる
-        let ep=document.querySelector('.ep_menu');
-        if(ep){
-            ep.remove(); }}
+    let help_url='https://ameblo.jp/personwritep/entry-12803137359.html';
 
-    function close_eps(){ // サブメニューを閉じる
-        let eps=document.querySelector('.eps_menu');
-        if(eps){
-            eps.remove(); }}
+    let help=
+        '<a class="epalette_help" href="'+ help_url +'" target="_blank">'+
+        '<svg width="20" height="24" viewBox="0 -20 150 150">'+
+        '<path  fill="#fff" d="M66 13C56 15 47 18 39 24C-12 60 18 146 82 137C92 '+
+        '135 102 131 110 126C162 90 128 4 66 13M68 25C131 17 145 117 81 '+
+        '125C16 133 3 34 68 25M69 40C61 41 39 58 58 61C66 63 73 47 82 57C84 '+
+        '60 83 62 81 65C77 70 52 90 76 89C82 89 82 84 86 81C92 76 98 74 100 66'+
+        'C105 48 84 37 69 40M70 94C58 99 66 118 78 112C90 107 82 89 70 94z">'+
+        '</path></svg></a>';
+
+
+    let ep_style=
+        '<style>'+
+        '.ep_menu { position: absolute; top: 10px; right: 20px; z-index: 15; '+
+        'font: 16px/26px Meiryo; width: 360px; padding: .6em 1em; '+
+        'border: 1px solid #009688; border-radius: 4px; '+
+        'background: #f9fafa; box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.3); } '+
+        '.ep_menu .mh { font: bold 18px Meiryo;  color: #fff; background: #2196f3; '+
+        'text-align: center; padding: 3px 0 0; margin-bottom: 8px; } '+
+        '.epalette_help { position: absolute; top: 11px; left: 24px; } '+
+        '.ep_close { position: absolute; top: 14px; right: 24px; height: 20px; '+
+        'line-height: 24px; padding: 0 2px; border: 1px solid #fff; '+
+        'border-radius: 3px; cursor: pointer; } '+
+        '.ep_menu .fn { white-space: nowrap; } '+
+
+        '.ep_menu input { height: 18px; font-family: system-ui; text-align: center; '+
+        'line-height: 20px; } '+
+        '.ep_menu input[type="number"]::-webkit-inner-spin-button { '+
+        'height: 16px; margin-top: 2px; } '+
+
+        '#F3w { width: 30px; margin-right: 8px; } #F4w { width: 38px; } '+
+        '#F6w { width: 28px; } #F6r { width: 34px; } '+
+        '#F6f, #F6s { margin-right: 4px; vertical-align: -3px; cursor: pointer; } '+
+        '#F3c, #F4c, #F6c, #F6b { height: 26px; width: 22px; border: none; '+
+        'background: none; vertical-align: -3px; cursor: pointer; } #F10 { width: 40px; } '+
+
+        '#SF8f, #SF8w { width: 48px; margin-right: 2px; } '+
+        '#SF8c { height: 26px; width: 22px; border: none; background: none; '+
+        'vertical-align: -3px; cursor: pointer; } ';
+
+    if(ua==1){
+        ep_style+=
+            '.ep_close { line-height: 22px; } '+
+            '#F3w, #F6w, #SF8f { width: 34px; } #F4w, #F10 { width: 44px; } '+
+            '#F6r { width: 38px; } #F6f, #F6s { vertical-align: -1px; } '+
+            '#F3c, #F4c, #F6c, #F6b, #SF8c { height: 18px; width: 18px; } '+
+
+            '#SF8f, #SF8w { width: 54px; } '+
+            '#SF8c { height: 18px; width: 18px; } '; }
+
+    ep_style+='</style>';
+
+
+
+    function close_main_menu(){ // メインメニューを閉じる
+        let main_menu=document.querySelector('.main_menu');
+        if(main_menu){
+            main_menu.remove(); }}
+
+    function close_sub_menu(){ // サブメニューを閉じる
+        let sub_menu=document.querySelector('.sub_menu');
+        if(sub_menu){
+            sub_menu.remove(); }}
 
 } // main()
