@@ -71,8 +71,10 @@ function main(){
         function check_key(event){
             let send=-1;
 
-            if(event.keyCode==19 && !event.shiftKey){ gate=1; } // 「Pause」キー入力
-            else if(event.keyCode==19 && event.shiftKey){ gate=2; } // 「Pause+Shift」キー入力
+            if(event.keyCode==19
+               && !event.shiftKey && !event.altKey){ gate=1; } // 「Pause」キー入力
+            else if(event.keyCode==19
+                    && event.shiftKey && !event.altKey){ gate=2; } // 「Pause+Shift」キー入力
 
             if(event.keyCode==112){
                 if(gate==1){ event.preventDefault(); send=112; } // F1
