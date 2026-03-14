@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
-// @version        5.7
+// @version        5.8
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventry*
@@ -809,27 +809,32 @@ function main(){
         if(sender==220){ // F9 +Shift　　日付表示「.update_date」の自動書換え
             let datedisp=iframe_doc.querySelector('.update_date'); // 更新対象日付のクラス名
             if(datedisp){
-                let date=new Date();
-                let year=date.getFullYear();
-                let month=date.getMonth()+1;
-                let day=date.getDate();
+                datedisp.scrollIntoView({block: "center"});
+                setTimeout(()=>{
 
-                let d_str=datedisp.textContent;
-                if(d_str.includes('年') || d_str.includes('月') || d_str.includes('日')){ // 年月日表示
-                    let index=d_str.search(/[0-9]/);
-                    let base_str=d_str.replace(/[0-9]|[年月日]/g, '');
-                    let top_str=base_str.slice(0, index);
-                    let end_str=base_str.slice(index);
-                    datedisp.textContent=top_str+ year +'年'+ month +'月'+ day +'日'+ end_str; }
-                else if(d_str.includes('.')){ // ドット繋ぎ表示
-                    let index=d_str.search(/[0-9]/);
-                    let base_str=d_str.replace(/[0-9]|\./g, '');
-                    let top_str=base_str.slice(0, index);
-                    let end_str=base_str.slice(index);
-                    datedisp.textContent=
-                        top_str+
-                        year +'.'+ String(month).padStart(2, '0') +'.'+ String(day).padStart(2, '0')+
-                        end_str; }}
+                    let date=new Date();
+                    let year=date.getFullYear();
+                    let month=date.getMonth()+1;
+                    let day=date.getDate();
+
+                    let d_str=datedisp.textContent;
+                    if(d_str.includes('年') || d_str.includes('月') || d_str.includes('日')){ // 年月日表示
+                        let index=d_str.search(/[0-9]/);
+                        let base_str=d_str.replace(/[0-9]|[年月日]/g, '');
+                        let top_str=base_str.slice(0, index);
+                        let end_str=base_str.slice(index);
+                        datedisp.textContent=top_str+ year +'年'+ month +'月'+ day +'日'+ end_str; }
+                    else if(d_str.includes('.')){ // ドット繋ぎ表示
+                        let index=d_str.search(/[0-9]/);
+                        let base_str=d_str.replace(/[0-9]|\./g, '');
+                        let top_str=base_str.slice(0, index);
+                        let end_str=base_str.slice(index);
+                        datedisp.textContent=
+                            top_str+
+                            year +'.'+ String(month).padStart(2, '0') +'.'+ String(day).padStart(2, '0')+
+                            end_str; }
+
+                },800); }
 
         } // F9 +Shift
 
