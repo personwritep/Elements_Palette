@@ -1,0 +1,86 @@
+// ==UserScript==
+// @name         Elements Palette
+// @namespace    http://tampermonkey.net/
+// @version      0.4
+// @description  編集枠に各種要素を自動記入するツール
+// @author       Ameba Blog User
+// @match        https://blog.ameba.jp/ucs/entry/srventry*
+// @grant        none
+// ==/UserScript==
+
+window.addEventListener( 'load', function() {
+    'use strict';
+
+var target = document.getElementById('cke_1_contents'); // 監視 target
+var monitor = new MutationObserver( catch_key );
+monitor.observe(target, {childList: true}); // ショートカット待受け開始
+
+catch_key();
+
+
+function catch_key() {
+var editor_iframe = document.querySelector('.cke_wysiwyg_frame');
+var iframe_doc = editor_iframe.contentWindow.document;
+
+iframe_doc.addEventListener( "keydown", check_key );
+var gate;
+function check_key(event) {
+    var send = -1;
+
+    if (event.which == 19 || event.keyCode == 19) { gate = 1; }
+    if (event.which == 112 || event.keyCode == 112) {
+        if( gate == 1 ){ event.preventDefault(); send = 112; } }
+    if (event.which == 113 || event.keyCode == 113) {
+        if( gate == 1 ){ event.preventDefault(); send = 113; } }
+    if (event.which == 116 || event.keyCode == 116) {
+        if( gate == 1 ){ event.preventDefault(); send = 116; } }
+    if (event.which != 19 || event.keyCode != 19) { gate = -1; }
+
+    if(send != -1) {
+        event.stopImmediatePropagation();
+        set_mark(send); }
+
+} // check_key
+} // catch_key
+
+
+function set_mark(sender) {
+
+if( sender == 112) {
+    var editor_iframe = document.querySelector('.cke_wysiwyg_frame');
+    var iframe_doc = editor_iframe.contentWindow.document;
+    var selection = iframe_doc.getSelection();
+    var range = selection.getRangeAt(0);
+    var insert_node = iframe_doc.createElement("i");
+    insert_node.appendChild( iframe_doc.createTextNode("\u00A0") );
+    insert_node.setAttribute("class", "fas fa-external-link-alt fa-sm");
+    insert_node.setAttribute("style", "margin-left: .5em");
+    range.insertNode( insert_node );
+
+    var insert_node_z = iframe_doc.createTextNode("\u200B");
+    insert_node.parentNode.insertBefore( insert_node_z, insert_node.nextSibling );
+    range.setEnd( insert_node_z.nextSibling, 0 );
+    range.collapse(); // フォーカスを失わないでrangeを閉じる
+ }
+
+if( sender == 113) {
+    editor_iframe = document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc = editor_iframe.contentWindow.document;
+    selection = iframe_doc.getSelection();
+    range = selection.getRangeAt(0);
+    insert_node = iframe_doc.createElement("div");
+    insert_node.setAttribute("style", "background:#fafafa; border:1px solid #aaa;overflow-y:hidden; max-width:660px; padding:0 30px");
+    insert_node.appendChild( iframe_doc.createElement("pre") );
+    insert_node.lastChild.setAttribute("style", "white-space:pre");
+    insert_node.lastChild.appendChild( iframe_doc.createElement("br") );
+    range.insertNode( insert_node );
+
+    range.setEnd( insert_node.lastChild, 0 ); // 生成したpreにrange終点を移動
+    range.collapse(); // rangeを始点で閉じる
+}
+
+if( sender == 116) {
+    alert("F5はショートカットが無効です"); }
+
+} // set_mark
+})
