@@ -1,0 +1,365 @@
+// ==UserScript==
+// @name         Elements Palette
+// @namespace    http://tampermonkey.net/
+// @version      1.6
+// @description  編集枠に各種要素を自動記入するツール
+// @author       Ameba Blog User
+// @match        https://blog.ameba.jp/ucs/entry/srventry*
+// @grant        none
+// ==/UserScript==
+
+window.addEventListener('load', function(){
+    'use strict';
+
+var target=document.getElementById('cke_1_contents'); // 監視 target
+var monitor=new MutationObserver(catch_key);
+monitor.observe(target, {childList: true}); // ショートカット待受け開始
+
+catch_key();
+
+
+function catch_key(){
+var editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+var iframe_doc=editor_iframe.contentWindow.document;
+
+iframe_doc.addEventListener("keydown", check_key);
+var gate;
+function check_key(event){
+    var send=-1;
+
+    if(event.which==19 || event.keyCode==19){ gate=1; }
+
+    if(event.which==112 || event.keyCode==112){
+        if(gate==1){ event.preventDefault(); send=112; }}
+    if(event.which==113 || event.keyCode==113){
+        if(gate==1){ event.preventDefault(); send=113; }}
+    if(event.which==114 || event.keyCode==114){
+        if(gate==1){ event.preventDefault(); send=114; }}
+    if(event.which==115 || event.keyCode==115){
+        if(gate==1){ event.preventDefault(); send=115; }}
+    if(event.which==116 || event.keyCode==116){
+        if(gate==1){ event.preventDefault(); send=116; }}
+    if(event.which==117 || event.keyCode==117){
+        if(gate==1){ event.preventDefault(); send=117; }}
+    if(event.which==118 || event.keyCode==118){
+        if(gate==1){ event.preventDefault(); send=118; }}
+    if(event.which==119 || event.keyCode==119) {
+        if(gate==1){ event.preventDefault(); send=119; }}
+    if(event.which==120 || event.keyCode==120){
+        if(gate==1){ event.preventDefault(); send=120; }}
+    if(event.which==121 || event.keyCode==121){
+        if(gate==1){ event.preventDefault(); send=121; }}
+    if(event.which==122 || event.keyCode==122){
+        if(gate==1){ event.preventDefault(); send=122; }}
+
+    if(event.which !=19 || event.keyCode !=19){ gate=-1; }
+    if(send !=-1){
+        event.stopImmediatePropagation();
+        set_mark(send); }
+
+} // check_key
+} // catch_key
+
+
+function set_mark(sender){
+
+    let editor_iframe;
+    let iframe_doc;
+    let selection;
+    let range;
+    let insert_node;
+    let pre_node;
+
+if(sender==112){ // F1    Font Awesomeアイコンの自動記入
+    let insert_node_z;
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    selection=iframe_doc.getSelection();
+    range=selection.getRangeAt(0);
+    insert_node=iframe_doc.createElement("i");
+    insert_node.appendChild(iframe_doc.createTextNode("\u00A0"));
+    insert_node.setAttribute("class", "fas fa-external-link-alt fa-sm");
+    insert_node.setAttribute("style", "margin-left: .5em");
+    range.insertNode(insert_node);
+
+    insert_node_z=iframe_doc.createTextNode("\u200B");
+    insert_node.parentNode.insertBefore(insert_node_z, insert_node.nextSibling);
+    range.setEnd(insert_node_z.nextSibling, 0);
+    range.collapse(); // フォーカスを失わないでrangeを閉じる
+ }
+
+
+if(sender==113){ // F2    h2 見出しの自動記入
+    let style_text="background: #b0e0e6; padding: .2em 1em"; // h2のデザイン
+    let font_size="font-size: 1em"; // h2のフォントサイズ
+    let insert_node_h;
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    selection=iframe_doc.getSelection();
+    range=selection.getRangeAt(0);
+    insert_node=iframe_doc.createTextNode("◀▶");
+    range.insertNode(insert_node);
+
+if(insert_node.parentNode.tagName=="P" && insert_node.parentNode.parentNode.tagName=="BODY"){
+    insert_node_h=iframe_doc.createElement("h2");
+    insert_node_h.setAttribute("style", font_size);
+    insert_node_h.appendChild(iframe_doc.createElement("span"));
+    insert_node_h.lastChild.setAttribute("style", style_text);
+    insert_node_h.lastChild.appendChild(iframe_doc.createTextNode("\u200B"));
+    insert_node.parentNode.parentNode.insertBefore(insert_node_h, insert_node.parentNode.nextSibling);
+
+    pre_node=insert_node_h.previousElementSibling;
+    if(pre_node.lastChild.tagName=="BR"){ pre_node.removeChild(pre_node.lastChild); }
+    if(pre_node.childNodes.length==1 && pre_node.textContent=="◀▶"){ pre_node.remove(); }
+    if(insert_node_h.nextElementSibling==null){
+        insert_node_h.insertAdjacentHTML('afterend', '<p>\u00A0</p><p>\u00A0</p>'); }
+
+    range.setEnd(insert_node_h.lastChild, 0); // 生成したspanにrangeを移動
+} // h要素生成の条件
+
+    insert_node.remove(); // アンカー削除
+    range.collapse(); // rangeを閉じる
+}
+
+
+if(sender==114){ // F3    h3 見出しの自動記入
+    let style_text="background: #ddd; padding: .2em 1em"; // h3のデザイン
+    let font_size="font-size: 1em"; // h3のフォントサイズ
+    let insert_node_h;
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    selection=iframe_doc.getSelection();
+    range=selection.getRangeAt(0);
+    insert_node=iframe_doc.createTextNode("◀▶");
+    range.insertNode(insert_node);
+
+if(insert_node.parentNode.tagName=="P" && insert_node.parentNode.parentNode.tagName=="BODY"){
+    insert_node_h=iframe_doc.createElement("h3");
+    insert_node_h.setAttribute("style", font_size);
+    insert_node_h.appendChild(iframe_doc.createElement("span"));
+    insert_node_h.lastChild.setAttribute("style", style_text);
+    insert_node_h.lastChild.appendChild(iframe_doc.createTextNode("\u200B"));
+    insert_node.parentNode.parentNode.insertBefore(insert_node_h, insert_node.parentNode.nextSibling);
+
+    pre_node=insert_node_h.previousElementSibling;
+    if(pre_node.lastChild.tagName=="BR"){ pre_node.removeChild(pre_node.lastChild); }
+    if(pre_node.childNodes.length==1 && pre_node.textContent=="◀▶"){ pre_node.remove(); }
+    if(insert_node_h.nextElementSibling==null){
+        insert_node_h.insertAdjacentHTML('afterend', '<p>\u00A0</p><p>\u00A0</p>'); }
+
+    range.setEnd(insert_node_h.lastChild, 0); // 生成したspanにrangeを移動
+} // h要素生成の条件
+
+    insert_node.remove(); // アンカー削除
+    range.collapse(); // rangeを閉じる
+}
+
+
+if(sender==115){ // F4    修飾線の自動記入
+    // 文字アンダーライン・マーカー線のデザイン
+    let style_text="linear-gradient(transparent 1.22em, #27d 0, #27d calc(1.22em + 1px), transparent 0)";
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    selection=iframe_doc.getSelection();
+    range=selection.getRangeAt(0);
+
+    insert_node=document.createElement('span');
+    insert_node.style.background=style_text;
+    range.surroundContents(insert_node);
+}
+
+
+if(sender==116){ // F5
+    alert("【 F5 】 はショートカット無効です \n⛔ページリロードに注意してください"); }
+
+
+if(sender==117){ // F6    囲み枠の自動生成
+    // 囲み枠のデザイン
+    let style_text="background: #f2faf8; border: 1px solid #aaa; border-radius: 4px; max-width: 660px;    \
+        padding: .62em 2em .5em; position: relative";
+    let insert_node_d;
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    selection=iframe_doc.getSelection();
+    range=selection.getRangeAt(0);
+    insert_node=iframe_doc.createTextNode("◀▶");
+    range.insertNode(insert_node);
+
+if(insert_node.parentNode.tagName=="P" && insert_node.parentNode.parentNode.tagName=="BODY"){
+    insert_node_d=iframe_doc.createElement("div");
+    insert_node_d.setAttribute("style", style_text);
+    insert_node_d.appendChild(iframe_doc.createElement("br"));
+    insert_node.parentNode.parentNode.insertBefore(insert_node_d, insert_node.parentNode.nextSibling);
+
+    pre_node=insert_node_d.previousElementSibling;
+    if(pre_node.lastChild.tagName=="BR"){ pre_node.removeChild(pre_node.lastChild); }
+    if(pre_node.childNodes.length==1 && pre_node.textContent=="◀▶"){ pre_node.remove(); }
+    if(insert_node_d.nextElementSibling==null){
+        insert_node_d.insertAdjacentHTML('afterend', '<p>\u00A0</p><p>\u00A0</p>'); }
+
+    range.setEnd( insert_node_d, 0 ); // 生成したdivにrange終点を移動
+} // div要素生成の条件
+
+    insert_node.remove(); // アンカー削除
+    range.collapse(); // フォーカスを失わないでrangeを閉じる
+}
+
+
+if(sender==118){ // F7    PRE枠の自動生成
+    // PRE枠のデザイン 縦スクロールしないタイプ
+    let style_text="background: #fafafa; border: 1px solid #aaa; overflow-y: hidden;    \
+        max-width: 660px; padding: 0 30px";
+    let insert_node_d;
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    selection=iframe_doc.getSelection();
+    range=selection.getRangeAt(0);
+    insert_node=iframe_doc.createTextNode("◀▶");
+    range.insertNode(insert_node);
+
+if(insert_node.parentNode.tagName=="P" && insert_node.parentNode.parentNode.tagName=="BODY"){
+    insert_node_d=iframe_doc.createElement("div");
+    insert_node_d.setAttribute("style", style_text);
+    insert_node_d.appendChild(iframe_doc.createElement("pre"));
+    insert_node_d.lastChild.setAttribute("style", "white-space:pre");
+    insert_node_d.lastChild.appendChild(iframe_doc.createElement("br"));
+    insert_node.parentNode.parentNode.insertBefore(insert_node_d, insert_node.parentNode.nextSibling);
+
+    pre_node=insert_node_d.previousElementSibling;
+    if(pre_node.lastChild.tagName=="BR"){ pre_node.removeChild(pre_node.lastChild); }
+    if(pre_node.childNodes.length==1 && pre_node.textContent=="◀▶"){ pre_node.remove(); }
+    if(insert_node_d.nextElementSibling==null){
+        insert_node_d.insertAdjacentHTML('afterend', '<p>\u00A0</p><p>\u00A0</p>'); }
+
+    range.setEnd(insert_node_d.lastChild, 0); // 生成したpreにrange終点を移動
+} // div要素生成の条件
+
+    insert_node.remove(); // アンカー削除
+    range.collapse(); // rangeを始点で閉じる
+}
+
+
+if(sender==119){ // F8    PRE枠の自動生成
+    // PRE枠のデザイン 縦スクロールするタイプ
+    let style_text="background: #fafafa; border: 1px solid #aaa; overflow: auto; height: 50vh;    \
+        max-width: 660px; padding: 0 30px";
+    let insert_node_d;
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    selection=iframe_doc.getSelection();
+    range=selection.getRangeAt(0);
+    insert_node=iframe_doc.createTextNode("◀▶");
+    range.insertNode(insert_node);
+
+if(insert_node.parentNode.tagName=="P" && insert_node.parentNode.parentNode.tagName=="BODY"){
+    insert_node_d=iframe_doc.createElement("div");
+    insert_node_d.setAttribute("style", style_text);
+    insert_node_d.appendChild(iframe_doc.createElement("pre"));
+    insert_node_d.lastChild.setAttribute("style", "white-space:pre");
+    insert_node_d.lastChild.appendChild(iframe_doc.createElement("br"));
+    insert_node.parentNode.parentNode.insertBefore(insert_node_d, insert_node.parentNode.nextSibling);
+    if(insert_node_d.nextElementSibling==null){
+        insert_node_d.insertAdjacentHTML('afterend', '<p>\u00A0</p><p>\u00A0</p>'); }
+
+    pre_node=insert_node_d.previousElementSibling;
+    if(pre_node.lastChild.tagName=="BR"){ pre_node.removeChild(pre_node.lastChild); }
+    if(pre_node.childNodes.length==1 && pre_node.textContent=="◀▶"){ pre_node.remove(); }
+    if(insert_node_d.nextElementSibling==null){
+        insert_node_d.insertAdjacentHTML('afterend', '<p>\u00A0</p><p>\u00A0</p>'); }
+
+    range.setEnd(insert_node_d.lastChild, 0); // 生成したpreにrange終点を移動
+} // div要素生成の条件
+
+    insert_node.remove(); // アンカー削除
+    range.collapse(); // rangeを始点で閉じる
+}
+
+
+if(sender==120){ // F9    文書末尾に空白行を追加
+    let iframe_body;
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    iframe_body=iframe_doc.querySelector('body.cke_editable');
+    selection=iframe_doc.getSelection();
+    range=selection.getRangeAt(0);
+
+    if(iframe_body.lastChild.tagName !="P"){
+        add_nextline();
+        add_nextline(); }
+
+    else if(iframe_body.lastChild.tagName=="P"){
+        if(iframe_body.lastChild.style.textAlign=="center" || iframe_body.lastChild.style.textAlign=="right"){
+            add_nextline();
+            add_nextline(); }}
+
+    range.setEnd(insert_node.lastChild, 0); // 追加した空白行にrange終点を移動
+    range.collapse(); // rangeを始点で閉じる
+    iframe_doc.querySelector('html').scrollTop=iframe_doc.querySelector('html').scrollHeight;
+
+    function add_nextline(){
+        insert_node=iframe_doc.createElement("p");
+        insert_node.appendChild(iframe_doc.createTextNode("\u00A0"));
+        iframe_body.appendChild(insert_node); }
+}
+
+
+if(sender==121){ // F10    リブログカードをデザイン
+    // リブログカードのデザイン
+    let style_dtext="max-width: 500px; height: 140px; margin: 0 auto; border: 1px solid #009688;    \
+        border-radius: 4px; overflow: hidden; transition: .5s";
+    let style_itext="max-width: unset; width: calc(100% + 30px); margin: -45px -15px 0;    \
+        background: #f0f7fb";
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    let iframe_body= iframe_doc.querySelector('body.cke_editable');
+    let rebrog=iframe_doc.querySelector('.reblogCard');
+    let insert_node_d=iframe_doc.createElement("div");
+
+    if(rebrog.parentNode.tagName=="P"){
+        iframe_body.insertBefore(insert_node_d, rebrog.parentNode);
+        insert_node_d.appendChild(rebrog); }
+
+    if(rebrog.parentNode.tagName=="DIV"){
+        rebrog.parentNode.setAttribute("style", style_dtext);
+        rebrog.parentNode.setAttribute("class", "rlink");
+        rebrog.setAttribute("style", style_itext); }
+}
+
+
+if(sender==122){ // F11    選択範囲のカギ括弧を詰める
+    // カギ括弧の詰め幅の設定
+    let style_l='<span style="display: inline-block; width: .7em; text-indent: -.3em">';
+    let style_r='<span style="display: inline-block; width: .7em">';
+
+/*
+    let style_l='<span style="font-family: Meiryo UI">';
+    let style_r='<span style="font-family: Meiryo UI">';
+*/
+
+    editor_iframe=document.querySelector('.cke_wysiwyg_frame');
+    iframe_doc=editor_iframe.contentWindow.document;
+    selection=iframe_doc.getSelection();
+    range=selection.getRangeAt(0);
+
+    let s_node=document.createElement('span');
+    s_node.textContent=range.toString();
+    let s_text=s_node.textContent;
+
+    if(s_text.match( /[「」]/ ) !=null && selection.anchorNode==selection.focusNode){
+        range.surroundContents(s_node);
+        s_node.innerHTML=s_text.replace(/「/g, style_l + '$&</span>').replace(/」/g, style_r + '$&</span>');}
+}
+
+
+} // set_mark
+
+})
