@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name        Elements Palette ⭐
 // @namespace        http://tampermonkey.net/
-// @version        6.0
+// @version        6.1
 // @description        編集枠に各種要素を自動記入するツール
 // @author        Ameba Blog User
 // @match        https://blog.ameba.jp/ucs/entry/srventryinsertinput.do*
@@ -11,6 +11,9 @@
 // @updateURL        https://github.com/personwritep/Elements_Palette/raw/main/Elements_Palette.user.js
 // @downloadURL        https://github.com/personwritep/Elements_Palette/raw/main/Elements_Palette.user.js
 // ==/UserScript==
+
+
+let listen=Symbol();
 
 
 let retry=0;
@@ -58,13 +61,16 @@ function main(){
     catch_key();
 
     function catch_key(){
-        document.addEventListener("keydown", check_key); // iframe外のキー取得
+        if(!document[listen]){
+            document.addEventListener("keydown", check_key); // iframe外のキー取得
+            document[listen]=true; }
 
         let editor_iframe=document.querySelector('.cke_wysiwyg_frame');
         if(editor_iframe){ // iframe読込みが実行条件
             let iframe_doc=editor_iframe.contentWindow.document;
-            iframe_doc.addEventListener("keydown", check_key); } // iframe内のキー取得
-
+            if(!iframe_doc[listen]){
+                iframe_doc.addEventListener("keydown", check_key);
+                iframe_doc[listen]=true; }} // iframe内のキー取得
 
         let gate;
 
@@ -522,85 +528,44 @@ function main(){
                 close_main_menu(); }
 
 
-
             let F3w=document.querySelector('#F3w');
             if(F3w){
                 F3w.value=ep_preset[1];
 
-                F3w.addEventListener("input", function(){
+                F3w.oninput=()=>{
                     ep_preset[1]=parseFloat(F3w.value);
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
 
 
             let F3c=document.querySelector('#F3c');
             if(F3c){
                 F3c.value=ep_preset[2];
 
-                F3c.addEventListener("change", function(){
+                F3c.onchange=()=>{
                     ep_preset[2]=F3c.value;
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
 
 
             let F4w=document.querySelector('#F4w');
             if(F4w){
                 F4w.value=ep_preset[3];
 
-                F4w.addEventListener("input", function(){
+                F4w.oninput=()=>{
                     ep_preset[3]=parseFloat(F4w.value);
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
 
 
             let F4c=document.querySelector('#F4c');
             if(F4c){
                 F4c.value=ep_preset[4];
 
-                F4c.addEventListener("change", function(){
+                F4c.onchange=()=>{
                     ep_preset[4]=F4c.value;
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
-
-
-            let F6w=document.querySelector('#F6w');
-            if(F6w){
-                F6w.value=ep_preset[5];
-
-                F6w.addEventListener("input", function(){
-                    ep_preset[5]=parseFloat(F6w.value);
-                    let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
-
-
-            let F6c=document.querySelector('#F6c');
-            if(F6c){
-                F6c.value=ep_preset[6];
-
-                F6c.addEventListener("change", function(){
-                    ep_preset[6]=F6c.value;
-                    let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
-
-
-            let F6r=document.querySelector('#F6r');
-            if(F6r){
-                F6r.value=ep_preset[7];
-
-                F6r.addEventListener("input", function(){
-                    ep_preset[7]=parseFloat(F6r.value);
-                    let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
-
-
-            let F6b=document.querySelector('#F6b');
-            if(F6b){
-                F6b.value=ep_preset[8];
-
-                F6b.addEventListener("change", function(){
-                    ep_preset[8]=F6b.value;
-                    let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
 
 
             let F6f=document.querySelector('#F6f');
@@ -610,13 +575,13 @@ function main(){
                 else{
                     F6f.checked=true; }
 
-                F6f.addEventListener("change", function(){
+                F6f.onchange=()=>{
                     if(F6f.checked==true){
                         ep_preset[9]=1; }
                     else{
                         ep_preset[9]=0; }
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
 
 
             let F6s=document.querySelector('#F6s');
@@ -626,23 +591,64 @@ function main(){
                 else{
                     F6s.checked=true; }
 
-                F6s.addEventListener("change", function(){
+                F6s.onchange=()=>{
                     if(F6s.checked==true){
                         ep_preset[11]=1; }
                     else{
                         ep_preset[11]=0; }
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
+
+
+            let F6w=document.querySelector('#F6w');
+            if(F6w){
+                F6w.value=ep_preset[5];
+
+                F6w.oninput=()=>{
+                    ep_preset[5]=parseFloat(F6w.value);
+                    let write_json=JSON.stringify(ep_preset);
+                    localStorage.setItem('EP_Preset', write_json); }}
+
+
+            let F6c=document.querySelector('#F6c');
+            if(F6c){
+                F6c.value=ep_preset[6];
+
+                F6c.onchange=()=>{
+                    ep_preset[6]=F6c.value;
+                    let write_json=JSON.stringify(ep_preset);
+                    localStorage.setItem('EP_Preset', write_json); }}
+
+
+            let F6r=document.querySelector('#F6r');
+            if(F6r){
+                F6r.value=ep_preset[7];
+
+                F6r.oninput=()=>{
+                    ep_preset[7]=parseFloat(F6r.value);
+                    let write_json=JSON.stringify(ep_preset);
+                    localStorage.setItem('EP_Preset', write_json); }}
+
+
+            let F6b=document.querySelector('#F6b');
+            if(F6b){
+                F6b.value=ep_preset[8];
+
+                F6b.onchange=()=>{
+                    ep_preset[8]=F6b.value;
+                    let write_json=JSON.stringify(ep_preset);
+                    localStorage.setItem('EP_Preset', write_json); }}
 
 
             let F10=document.querySelector('#F10');
             if(F10){
                 F10.value=ep_preset[10];
 
-                F10.addEventListener("input", function(){
+                F10.oninput=()=>{
                     ep_preset[10]=parseFloat(F10.value);
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
+
         } // F12
 
 
@@ -872,11 +878,11 @@ function main(){
             if(SF8f){
                 SF8f.value=ep_preset[12].toFixed(2);
 
-                SF8f.addEventListener("input", function(){
+                SF8f.oninput=()=>{
                     ep_preset[12]=parseFloat(SF8f.value);
                     SF8f.value=ep_preset[12].toFixed(2);
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
 
 
             let SF8w=document.querySelector('#SF8w');
@@ -886,22 +892,22 @@ function main(){
                 iframe_body=iframe_doc.querySelector('body.cke_editable');
                 let w_max=iframe_body.clientWidth-16;
 
-                SF8w.addEventListener("input", function(){
+                SF8w.oninput=()=>{
                     if(parseFloat(SF8w.value)>w_max){
                         SF8w.value=w_max; }
                     ep_preset[13]=parseFloat(SF8w.value);
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
 
 
             let SF8c=document.querySelector('#SF8c');
             if(SF8c){
                 SF8c.value=ep_preset[14];
 
-                SF8c.addEventListener("change", function(){
+                SF8c.onchange=()=>{
                     ep_preset[14]=SF8c.value;
                     let write_json=JSON.stringify(ep_preset);
-                    localStorage.setItem('EP_Preset', write_json); }); }
+                    localStorage.setItem('EP_Preset', write_json); }}
 
         } // F12 +Shift
 
